@@ -1,0 +1,79 @@
+POST http://localhost:3000/user/registration
+Content-Type: application/json
+
+{
+    "email":"abhilash.vadnala@gmail.com",
+    "password":"VeryStrongPassword",
+    "firstName":"Abhilash",
+    "lastName":"Vadnala",
+    "phoneNumber":"9165139006"
+}
+
+###
+# @name login
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+    "email":"abhilash.vadnala@gmail.com",
+    "password":"VeryStrongPassword"
+}
+
+###
+
+@authToken = {{login.response.body.$.accessToken}}
+
+###
+
+GET http://localhost:3000/jwt/decode
+Authorization: Bearer {{authToken}}
+
+###
+
+GET http://localhost:3001/decode
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name queryCreator
+POST http://localhost:3001/query/create
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "title":"Multiplication Question",
+    "body":"What is 5449+6789?",
+    "tags":[
+        "Mathematics",
+        "Arithmetic",
+        "Addition"
+    ]
+}
+
+###
+
+@recentQuery = {{queryCreator.response.body.$._id}}
+
+###
+
+GET http://localhost:3001/query/read
+
+###
+
+
+POST http://localhost:3001/response/create
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "body":"5449*6789*0=0",
+    "query":"{{recentQuery}}"
+}
+
+###
+
+GET http://localhost:3001/test
+
+###
+
+DELETE http://localhost:3001/deleteAllCollections
